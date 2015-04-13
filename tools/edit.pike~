@@ -48,10 +48,8 @@ int main(int argc, array(string) argv)
     file = conn->find_object(options->file);
   else if (options->file[0] == '/')
     file = _Server->get_module("filepath:tree")->path_to_object(options->file);
-  else if(objectp(_Server->get_module("users")->lookup((options->file / "/")[0])) && sizeof(options-> file / "/") > 1)
-	file = _Server->get_module("users")->lookup((options->file / "/")[0])->query_attribute("USER_WORKROOM")->get_object_byname((options->file / "/")[1]);
-  else if(objectp(_Server->get_module("groups")->lookup((options->file / "/")[0])) && sizeof(options-> file / "/") > 1)
-	file = _Server->get_module("groups")->lookup((options->file / "/")[0])->query_attribute("GROUP_WORKROOM")->get_object_byname((options->file / "/")[1]);
+  else // FIXME: try to find out how to use relative paths
+    file = _Server->get_module("filepath:tree")->path_to_object(options->file);
   if (file->get_class() == "Link")
       file = file->get_link_object();
   return applaunch(file, exit);
