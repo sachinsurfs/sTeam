@@ -50,25 +50,16 @@ int main(int argc, array(string) argv)
     file = _Server->get_module("filepath:tree")->path_to_object(options->file);
   else if(objectp(_Server->get_module("users")->lookup((options->file / "/")[0])) && sizeof(options-> file / "/") > 1)
   {
-    //object userpath = (_Server->get_module("users")->lookup((options->file / "/")[0])->query_attribute("USER_WORKROOM"));
-    //string upath = _Server->get_module("filepath:tree")->object_to_path(userpath);
-    //file = _Server->get_module("filepath:tree")->path_to_object(upath + options->file);
-    
-    //Simple 1-level Relative path
-    //file = _Server->get_module("users")->lookup((options->file / "/")[0])->query_attribute("USER_WORKROOM")->get_object_byname((options->file / "/")[1]);
-
-     file = _Server->get_module("filepath:tree")->path_to_object("/home/" + options->file);
-   }
+    object userpath = (_Server->get_module("users")->lookup((options->file / "/")[0])->query_attribute("USER_WORKROOM"));
+    file = _Server->get_module("filepath:tree")->resolve_path(userpath, (options->file / "/")[1..]*"/" );
+  }
   else if(objectp(_Server->get_module("groups")->lookup((options->file / "/")[0])) && sizeof(options-> file / "/") > 1)
-{
-     //Simple 1-level Relative path	
-     //file = _Server->get_module("groups")->lookup((options->file / "/")[0])->query_attribute("GROUP_WORKROOM")->get_object_byname((options->file / "/")[1]);
- 
-     file = _Server->get_module("filepath:tree")->path_to_object("/home/" + options->file);
-
- }
+  {
+    object grouppath = (_Server->get_module("groups")->lookup((options->file / "/")[0])->query_attribute("GROUP_WORKROOM"));
+    file = _Server->get_module("filepath:tree")->resolve_path(userpath, (options->file / "/")[1..]*"/" );
+  }
   if (file->get_class() == "Link")
-      file = file->get_link_object();
+    file = file->get_link_object();
   return applaunch(file, exit);
 }
 
